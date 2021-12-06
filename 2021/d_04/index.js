@@ -1,8 +1,8 @@
 var fs = require('fs');
 
 const generateInputFromFile = (fileName) => {
-	try {  
-		var data = fs.readFileSync(fileName, 'utf8');
+	try {
+		const data = fs.readFileSync(fileName, 'utf8');
 		let rowsAsString = data.toString().split('\n')
 		return {
 			drawNumbers: rowsAsString[0].split(','),
@@ -17,15 +17,16 @@ const generateTables = (rowsAsString) => {
 	let tables = []
 	let singleTable = []
 	const regexpForMultipleSpaces = /\s\s+/g
-	console.log(rowsAsString)
 
-	rowsAsString.splice(0, 1) // remove first entry, whichare not the tables
+	rowsAsString.splice(0, 1) // remove first entry, which are not the tables
 	rowsAsString.forEach(singleRow => {
 		if(singleRow !== '') {
 			let match = singleRow.replace(regexpForMultipleSpaces, ' ')
 								 	.split(' ')
 									.filter(e => e !== '')
-									.map(e => {value = e, isMarked = false});
+									.map(e => {
+										return {value : parseInt(e), isMarked : false}
+									})
 			singleTable.push(match)
 		} 
 		
@@ -35,6 +36,25 @@ const generateTables = (rowsAsString) => {
 		}
 	})
 	return tables
+}
+
+const generateIndexTable = (tables) => {
+	let indexTable = []
+	tables.forEach((singleTable, index) => {
+		for (let x = 0; x < 5; x++) {
+			for (let y = 0; y < 5; y++) {
+				if(indexTable[singleTable[x][y].value]==null){
+					indexTable[singleTable[x][y].value] = [];
+				}
+				indexTable[singleTable[x][y].value].push({block: index, x : x, y: y})
+			}
+		}
+	})
+
+	// markIndex() {
+	// 	[63,[64],65].forEach(|e| => (tables[e.block][e.x][e.y])
+	// }
+	return indexTable
 }
 
 
@@ -50,5 +70,6 @@ const generateTables = (rowsAsString) => {
 
 
 module.exports = {
-	generateInputFromFile
+	generateInputFromFile,
+	generateIndexTable
 }
