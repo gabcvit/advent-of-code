@@ -1,5 +1,7 @@
 var fs = require('fs');
 
+let MATRIX_SIZE = 5;
+
 const generateInputFromFile = (fileName) => {
 	try {
 		const data = fs.readFileSync(fileName, 'utf8');
@@ -30,7 +32,7 @@ const generateTables = (rowsAsString) => {
 			singleTable.push(match)
 		} 
 		
-		if(singleTable.length === 5) {
+		if(singleTable.length === MATRIX_SIZE) {
 			tables.push(singleTable)
 			singleTable = []
 		}
@@ -41,8 +43,8 @@ const generateTables = (rowsAsString) => {
 const generateIndexTable = (tables) => {
 	let indexTable = []
 	tables.forEach((singleTable, index) => {
-		for (let x = 0; x < 5; x++) {
-			for (let y = 0; y < 5; y++) {
+		for (let x = 0; x < MATRIX_SIZE; x++) {
+			for (let y = 0; y < MATRIX_SIZE; y++) {
 				if(indexTable[singleTable[x][y].value]==null){
 					indexTable[singleTable[x][y].value] = [];
 				}
@@ -57,7 +59,7 @@ const generateIndexTable = (tables) => {
 
 const checkColumnOfTableForBingo = (indexOfColumn, table) => {
 	let isBingo = true;
-	for (let i = 0; i < 5; i++) {
+	for (let i = 0; i < MATRIX_SIZE; i++) {
 		isBingo = isBingo && table[i][indexOfColumn].isMarked;
 	}
 
@@ -66,7 +68,7 @@ const checkColumnOfTableForBingo = (indexOfColumn, table) => {
 
 const checkLineOfTableForBingo = (indexOfLine, table) => {
 	let isBingo = true;
-	for (let i = 0; i < 5; i++) {
+	for (let i = 0; i < MATRIX_SIZE; i++) {
 		isBingo = isBingo && table[indexOfLine][i].isMarked;
 	}
 	return isBingo
@@ -123,7 +125,7 @@ const solvePartTwo = (filename) => {
 	const bagOfNumbers = generateIndexTable(inputObject.tables)
 
 	let lastNumber = null;
-	let bingoedTables = Array.apply(null, Array(5)).map(x => { return false; })
+	let bingoedTables = Array.apply(null, Array(MATRIX_SIZE)).map(x => { return false; })
 	let strigifiedLastStateOfTableWhenBingo = null
 
 	for (let index = 0; index < inputObject.drawNumbers.length; index++) {
