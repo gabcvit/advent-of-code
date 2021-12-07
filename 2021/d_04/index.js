@@ -72,6 +72,28 @@ const checkLineOfTableForBingo = (indexOfLine, table) => {
 	return isBingo
 }
 
+const markNumberAndUpdateTables = (tables, indexedNumber) => {
+	tables[indexedNumber.block][indexedNumber.x][indexedNumber.y].isMarked = true
+	return tables
+}
+
+const checkIfBingo = (xOfFoundNumber, yOfFoundNumber, table) => {
+	return checkLineOfTableForBingo(xOfFoundNumber, table) || checkColumnOfTableForBingo(yOfFoundNumber, table)
+}
+
+const getSumOfAllUnmarkedNumbers = (table) => {
+	let sum = 0;
+	table.forEach(row => {
+		row.forEach(number => {
+			if(!number.isMarked) {
+				sum += number.value;
+			}
+		})
+	})
+
+	return sum
+}
+
 const solvePartOne = (filename) => {
 	const inputObject = generateInputFromFile(filename)
 	const bagOfNumbers = generateIndexTable(inputObject.tables)
@@ -79,56 +101,44 @@ const solvePartOne = (filename) => {
 	let lastNumber = null;
 	for (let index = 0; index < inputObject.drawNumbers.length; index++) {
 		for (let indexedNumber of bagOfNumbers[inputObject.drawNumbers[index]]) {
-			inputObject.tables[indexedNumber.block][indexedNumber.x][indexedNumber.y].isMarked = true
-			if (checkLineOfTableForBingo(indexedNumber.x, inputObject.tables[indexedNumber.block]) || checkColumnOfTableForBingo(indexedNumber.y, inputObject.tables[indexedNumber.block])){
+			inputObject.tables = markNumberAndUpdateTables(inputObject.tables, indexedNumber)
+
+			if (checkIfBingo(indexedNumber.x, indexedNumber.y, inputObject.tables[indexedNumber.block])) {
 				lastNumber = inputObject.drawNumbers[index];
 				indexOfBingoBlock = indexedNumber.block
 				break;
 			}
 		}
-		if (indexOfBingoBlock !== null){
+		if (indexOfBingoBlock !== null) {
 			break;
 		}
 	}
 
-	let sum = 0;
-	inputObject.tables[indexOfBingoBlock].forEach(row => {
-		row.forEach(number => {
-			if(!number.isMarked) {
-				sum += number.value;
-			}
-		})
-	})
-	// console.log("Bingonumber: " + lastNumber + "BingoBlock: " + indexOfBingoBlock)
+	const sum = getSumOfAllUnmarkedNumbers(inputObject.tables[indexOfBingoBlock]);
 	return sum * lastNumber
 }
 
 const solvePartTwo = (filename) => {
 	const inputObject = generateInputFromFile(filename)
 	const bagOfNumbers = generateIndexTable(inputObject.tables)
-	let indexOfBingoBlock = null;
+
 	let lastNumber = null;
-	let currentStateOfBingoTable = null;
+	let bingoedTables = Array.apply(null, Array(5)).map(x => { return false; })
+	let strigifiedLastStateOfTableWhenBingo = null
+
 	for (let index = 0; index < inputObject.drawNumbers.length; index++) {
 		for (let indexedNumber of bagOfNumbers[inputObject.drawNumbers[index]]) {
-			inputObject.tables[indexedNumber.block][indexedNumber.x][indexedNumber.y].isMarked = true
-			if (checkLineOfTableForBingo(indexedNumber.x, inputObject.tables[indexedNumber.block]) || checkColumnOfTableForBingo(indexedNumber.y, inputObject.tables[indexedNumber.block])){
+			inputObject.tables = markNumberAndUpdateTables(inputObject.tables, indexedNumber)
+
+			if (!bingoedTables[indexedNumber.block] && checkIfBingo(indexedNumber.x, indexedNumber.y, inputObject.tables[indexedNumber.block])) {
+				bingoedTables[indexedNumber.block] = true
 				lastNumber = inputObject.drawNumbers[index];
-				indexOfBingoBlock = indexedNumber.block
-				currentStateOfBingoTable = inputObject.tables[indexedNumber.block];
+				strigifiedLastStateOfTableWhenBingo = JSON.stringify(inputObject.tables[indexedNumber.block])
 			}
 		}
 	}
 
-	let sum = 0;
-	currentStateOfBingoTable.forEach(row => {
-		row.forEach(number => {
-			if(!number.isMarked) {
-				sum += number.value;
-			}
-		})
-	})
-	// console.log("Bingonumber: " + lastNumber + "BingoBlock: " + indexOfBingoBlock)
+	const sum = getSumOfAllUnmarkedNumbers(JSON.parse(strigifiedLastStateOfTableWhenBingo));
 	return sum * lastNumber
 }
 
@@ -136,10 +146,10 @@ const solvePartTwo = (filename) => {
 // RUN THE CHALLENGE
 
 // pt1
-// console.log('part 1: ', solvePartOne('input_final.txt'))
+console.log('part 1: ', solvePartOne('input_final.txt'))
 
 //pt 2
-// console.log('part 2: ', solvePartTwo('input_final.txt'))
+console.log('part 2: ', solvePartTwo('input_final.txt'))
 
 
 

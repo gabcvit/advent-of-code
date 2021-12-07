@@ -28,24 +28,24 @@ describe('Testing index functionaities', () => {
 	// it('part1: should mark all numbers as true on their respective position', () => {
 	// 	const inputObject = generateInputFromFile('input_example.txt')
 	// 	const bagOfNumbers = generateIndexTable(inputObject.tables)
-	//
+	
 	// 	const updatedTables = markAllPositionOf(7,bagOfNumbers, inputObject.tables)
-	//
+	
 	// 	expect(updatedTables[0][2][4].isMarked).toBe(true)
 	// 	expect(updatedTables[1][2][2].isMarked).toBe(true)
 	// 	expect(updatedTables[2][4][4].isMarked).toBe(true)
 	// })
-	//
+	
 	// it('part1: should find the bingo block in the first line', () => {
 	// 	const inputObject = generateInputFromFile('input_example.txt')
 	// 	const bagOfNumbers = generateIndexTable(inputObject.tables)
-	//
+	
 	// 	for (let i = 0; i <= 11; i++) {
 	// 		inputObject.tables = markAllPositionOf(inputObject.drawNumbers[i], bagOfNumbers, inputObject.tables)
 	// 	}
-	//
+	
 	// 	const blockIndex = findBingoBlock(inputObject.tables)
-	//
+	
 	// 	expect(blockIndex).toBe(2)
 	// })
 	//
