@@ -79,8 +79,8 @@ const markNumberAndUpdateTables = (tables, indexedNumber) => {
 	return tables
 }
 
-const checkIfBingo = (xOfFoundNumber, yOfFoundNumber, table) => {
-	return checkLineOfTableForBingo(xOfFoundNumber, table) || checkColumnOfTableForBingo(yOfFoundNumber, table)
+const checkIfBingo = (xCoordinateOfFoundNumber, yCoordinateOfFoundNumber, table) => {
+	return checkLineOfTableForBingo(xCoordinateOfFoundNumber, table) || checkColumnOfTableForBingo(yCoordinateOfFoundNumber, table)
 }
 
 const getSumOfAllUnmarkedNumbers = (table) => {
@@ -125,8 +125,8 @@ const solvePartTwo = (filename) => {
 	const bagOfNumbers = generateIndexTable(inputObject.tables)
 
 	let lastNumber = null;
-	let bingoedTables = Array.apply(null, Array(MATRIX_SIZE)).map(x => { return false; })
-	let strigifiedLastStateOfTableWhenBingo = null
+	let bingoedTables = Array.apply(null, Array(MATRIX_SIZE)).map(() => { return false; })
+	let stringifiedLastStateOfTableWhenBingo = null
 
 	for (let index = 0; index < inputObject.drawNumbers.length; index++) {
 		for (let indexedNumber of bagOfNumbers[inputObject.drawNumbers[index]]) {
@@ -135,12 +135,14 @@ const solvePartTwo = (filename) => {
 			if (!bingoedTables[indexedNumber.block] && checkIfBingo(indexedNumber.x, indexedNumber.y, inputObject.tables[indexedNumber.block])) {
 				bingoedTables[indexedNumber.block] = true
 				lastNumber = inputObject.drawNumbers[index];
-				strigifiedLastStateOfTableWhenBingo = JSON.stringify(inputObject.tables[indexedNumber.block])
+				//https://stackoverflow.com/questions/122102/what-is-the-most-efficient-way-to-deep-clone-an-object-in-javascript
+				// wtf its the first result. That's javascript for you
+				stringifiedLastStateOfTableWhenBingo = JSON.stringify(inputObject.tables[indexedNumber.block])
 			}
 		}
 	}
 
-	const sum = getSumOfAllUnmarkedNumbers(JSON.parse(strigifiedLastStateOfTableWhenBingo));
+	const sum = getSumOfAllUnmarkedNumbers(JSON.parse(stringifiedLastStateOfTableWhenBingo));
 	return sum * lastNumber
 }
 
