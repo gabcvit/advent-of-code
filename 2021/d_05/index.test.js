@@ -12,7 +12,7 @@ describe('Testing index functionaities', () => {
 	})
 
 	it('part1: should return a valid array of points to be incremented for a vector', () => {
-		const vector = { x1: 0, y1: 9, x2: 5, y2: 9 }
+		const vector = { x1: 1, y1: 9, x2: 0, y2: 9 }
 		const result = getPointsCoveredByVector(vector)
 		const expectedResult = ['0-9', '1-9', '2-9', '3-9', '4-9', '5-9']
 

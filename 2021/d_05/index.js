@@ -24,7 +24,7 @@ const isDiagonal = (vector) => {
 const getPointsToCover = (number1, number2) => {
 	const range = (min, max) => Array.from({ length: max - min + 1 }, (_, i) => min + i);
 
-	let sortedArray = [number1, number2].sort()
+	let sortedArray = [number1, number2].sort((a, b) => {return a - b})
 	return range(sortedArray[0], sortedArray[1])
 }
 
@@ -96,8 +96,6 @@ const solvePartOne = (filename) => {
 // RUN THE CHALLENGE
 
 // pt1
-// 4687 is too low
-// 4797 is wrong
 console.log('part 1: ', solvePartOne('input_final.txt'))
 
 //pt 2
