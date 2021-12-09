@@ -28,13 +28,36 @@ const getPointsToCover = (number1, number2) => {
 	return range(sortedArray[0], sortedArray[1])
 }
 
-const getPointsCoveredByVector = (vector) => {
-	if (isDiagonal(vector)) {
-		return null
+const getPointsToCoverForDiagonal = (vector) => {
+	// let xRange = getPointsToCover(vector.x1, vector.x2)
+	// let yRange = getPointsToCover(vector.y1, vector.y2)
+	// return  xRange.map((xValue, index) => {
+	// 	return `${xValue}-${yRange[index]}`
+	// })
+	// const range = (min, max) => Array.from({ length: max - min + 1 }, (_, i) => min + i);
+	//
+	// let sortedArray = [number1, number2].sort((a, b) => {return a - b})
+	let pointsToCover = []
+	let criteria = vector.x1 > vector.x2 ? -1 : 1;
+	// isDiagoanl |x1-x2| = |y1-y2|
+	for (let index = vector.x1; index > vector.x2; index++) {
+
 	}
 
+	return []
+}
+
+const getPointsCoveredByVector = (vector, isPartTwo) => {
 	let pointsToCover = []
-	
+
+	if (isPartTwo ) {
+		return getPointsToCoverForDiagonal(vector)
+	} else {
+		if(isDiagonal(vector)) {
+			return null
+		}
+	}
+
 	if (vector.x1 !== vector.x2) {
 		pointsToCover = getPointsToCover(vector.x1, vector.x2).map(singleXValue => {
 			return `${singleXValue}-${vector.y1}`
@@ -68,7 +91,7 @@ const generateHashMap = (pointCoordinates, hashMap) => {
 const getAllCrossroadsFromHashMap = (hashMap) => {
 	let countOfCrossroads = 0
 
-	for (singlePoint of hashMap) {
+	for (let singlePoint of hashMap) {
 		if (singlePoint[1] >= 2) {
 			countOfCrossroads++
 		}
@@ -82,7 +105,7 @@ const solvePartOne = (filename) => {
 
 	let allPointsToIncrement = []
 	for (let singleVector of inputArray) {
-		let points = getPointsCoveredByVector(singleVector)
+		let points = getPointsCoveredByVector(singleVector, false)
 		if (points !== null) {
 			allPointsToIncrement = allPointsToIncrement.concat(points)
 		}
@@ -96,7 +119,7 @@ const solvePartOne = (filename) => {
 // RUN THE CHALLENGE
 
 // pt1
-console.log('part 1: ', solvePartOne('input_final.txt'))
+// console.log('part 1: ', solvePartOne('input_final.txt'))
 
 //pt 2
 // console.log('part 2: ', solvePartTwo('input_final.txt'))
@@ -109,5 +132,6 @@ module.exports = {
 	getPointsCoveredByVector,
 	generateHashMap,
 	getAllCrossroadsFromHashMap,
-	solvePartOne
+	solvePartOne,
+	getPointsToCoverForDiagonal,
 }

@@ -1,5 +1,6 @@
 const { it, expect } = require("@jest/globals")
-const { generateInputFromFile, getPointsCoveredByVector, generateHashMap, getAllCrossroadsFromHashMap, solvePartOne } = require("./index.js")
+const each = require("jest-each").default;
+const { generateInputFromFile, getPointsCoveredByVector, generateHashMap, getAllCrossroadsFromHashMap, solvePartOne, getPointsToCoverForDiagonal } = require("./index.js")
 
 
 describe('Testing index functionaities', () => {
@@ -12,11 +13,10 @@ describe('Testing index functionaities', () => {
 	})
 
 	it('part1: should return a valid array of points to be incremented for a vector', () => {
-		const vector = { x1: 1, y1: 9, x2: 0, y2: 9 }
-		const result = getPointsCoveredByVector(vector)
+		const vector = { x1: 0, y1: 9, x2: 5, y2: 9 }
+		const result = getPointsCoveredByVector(vector, false)
 		const expectedResult = ['0-9', '1-9', '2-9', '3-9', '4-9', '5-9']
 
-		console.log(result)
 		expect(result).toEqual(expectedResult)
 	})
 
@@ -51,12 +51,35 @@ describe('Testing index functionaities', () => {
 	})
 
 	it('part1: should pass example', () => {
-		const result = solvePartOne('input_final.txt')
+		const result = solvePartOne('input_example.txt')
 		const expectedResult = 5
 
 		expect(result).toBe(expectedResult)
 	})
 
+	it('part2: should return all points on a diagonal line', () => {
+		const vector = { x1: 1, y1: 1, x2: 3, y2: 3 }
+		const result = getPointsToCoverForDiagonal(vector)
+		const expectedResult = ['1-1', '2-2', '3-3']
 
+		expect(result).toEqual(expectedResult)
+	})
+
+	each([
+		[{ x1: 9, y1: 7, x2: 7, y2: 9 }, ['9-7', '8-8', '7-9']],
+		[{ x1: 3, y1: 6, x2: 6, y2: 3 }, ['3-6', '4-5', '5-4', '6-3']]
+	]).it('part2: should return all points on a diagonal line where x and y are inverted', (vector, expectedResult) => {
+		const result = getPointsToCoverForDiagonal(vector)
+
+		expect(result).toEqual(expectedResult)
+	})
+
+	it('part2: should return all points on a diagonal line when startpoint is higher', () => {
+		const vector = { x1: 6, y1: 9, x2: 2, y2: 5 }
+		const result = getPointsToCoverForDiagonal(vector)
+		const expectedResult = ['2-5', '3-6', '4-7', '5-8', '6-9']
+
+		expect(result).toEqual(expectedResult)
+	})
 
 })
