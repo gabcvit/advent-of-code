@@ -28,13 +28,32 @@ const getPointsToCover = (number1, number2) => {
 	return range(sortedArray[0], sortedArray[1])
 }
 
-const getPointsCoveredByVector = (vector) => {
-	if (isDiagonal(vector)) {
-		return null
+const getPointsToCoverForDiagonal = (vector) => {
+	// 1 - find out slope
+	let m = (vector.y2 - vector.y1) / (vector.x2 - vector.x1)
+
+	// 2 - find out "b" using slope and a point: y = mx + b
+	let b = vector.y1 - (m * vector.x1)
+
+	// generate coordinates using formula
+	let allXCoordinatesToCover = getPointsToCover(vector.x1, vector.x2)
+
+	return allXCoordinatesToCover.map(singleXCoordinate => {
+		return `${singleXCoordinate}-${(m * singleXCoordinate) + b}`
+	})
+}
+
+const getPointsCoveredByVector = (vector, isPartTwo) => {
+	let pointsToCover = []
+
+	if (isPartTwo && isDiagonal(vector)) {
+		return getPointsToCoverForDiagonal(vector)
+	} else {
+		if(isDiagonal(vector)) {
+			return null
+		}
 	}
 
-	let pointsToCover = []
-	
 	if (vector.x1 !== vector.x2) {
 		pointsToCover = getPointsToCover(vector.x1, vector.x2).map(singleXValue => {
 			return `${singleXValue}-${vector.y1}`
@@ -68,7 +87,7 @@ const generateHashMap = (pointCoordinates, hashMap) => {
 const getAllCrossroadsFromHashMap = (hashMap) => {
 	let countOfCrossroads = 0
 
-	for (singlePoint of hashMap) {
+	for (let singlePoint of hashMap) {
 		if (singlePoint[1] >= 2) {
 			countOfCrossroads++
 		}
@@ -77,12 +96,12 @@ const getAllCrossroadsFromHashMap = (hashMap) => {
 	return countOfCrossroads
 }
 
-const solvePartOne = (filename) => {
+const solveChallenge = (filename, isPartTwo) => {
 	const inputArray = generateInputFromFile(filename)
 
 	let allPointsToIncrement = []
 	for (let singleVector of inputArray) {
-		let points = getPointsCoveredByVector(singleVector)
+		let points = getPointsCoveredByVector(singleVector, isPartTwo)
 		if (points !== null) {
 			allPointsToIncrement = allPointsToIncrement.concat(points)
 		}
@@ -93,13 +112,21 @@ const solvePartOne = (filename) => {
 	return getAllCrossroadsFromHashMap(hashMap)
 }
 
+const solvePartOne = (filename) => {
+	return solveChallenge(filename, false)
+}
+
+const solvePartTwo = (filename) => {
+	return solveChallenge(filename, true)
+}
+
 // RUN THE CHALLENGE
 
 // pt1
-console.log('part 1: ', solvePartOne('input_final.txt'))
+// console.log('part 1: ', solvePartOne('input_final.txt'))
 
 //pt 2
-// console.log('part 2: ', solvePartTwo('input_final.txt'))
+console.log('part 2: ', solvePartTwo('input_final.txt'))
 
 
 
@@ -109,5 +136,7 @@ module.exports = {
 	getPointsCoveredByVector,
 	generateHashMap,
 	getAllCrossroadsFromHashMap,
-	solvePartOne
+	solvePartOne,
+	solvePartTwo,
+	getPointsToCoverForDiagonal,
 }
